@@ -135,6 +135,30 @@
             </button>
           </div>
           <input type="hidden" id="ajout-moment-naissance" name="moment-naissance" value="avant">
+
+          <!-- « Je ne suis pas sûr(e) » : même calcul que sur le formulaire du site -->
+          <div class="case-option">
+            <input id="ajout-moment-incertain" name="moment-incertain" class="case-option__case" type="checkbox" aria-controls="ajout-bloc-incertain">
+            <label for="ajout-moment-incertain">Je ne suis pas sûr(e)</label>
+          </div>
+
+          <div id="ajout-bloc-incertain" class="bloc-incertain" hidden>
+            <div class="champ">
+              <label for="ajout-heure-naissance" class="champ__libelle">Heure de naissance</label>
+              <input id="ajout-heure-naissance" name="heure-naissance" class="champ__saisie" type="time" aria-describedby="erreur-ajout-heure-naissance">
+              <p id="erreur-ajout-heure-naissance" class="message-erreur" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="ajout-lieu-naissance" class="champ__libelle">Lieu de naissance</label>
+              <div class="champ__cadre">
+                <input id="ajout-lieu-naissance" name="lieu-naissance" class="champ__saisie" type="text" autocomplete="off" placeholder="Ex. : Perpignan" maxlength="200"
+                       role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="ajout-suggestions-lieu" aria-describedby="erreur-ajout-lieu-naissance">
+                <ul id="ajout-suggestions-lieu" class="suggestions" role="listbox" aria-label="Lieux proposés" hidden></ul>
+              </div>
+              <p id="erreur-ajout-lieu-naissance" class="message-erreur" hidden></p>
+            </div>
+            <p id="ajout-info-chkia" class="info-chkia" aria-live="polite" hidden></p>
+          </div>
         </div>
 
         <div id="bloc-ajout-consentement" class="consentement">
@@ -164,6 +188,8 @@
               <th scope="col">Nom</th>
               <th scope="col">Date de naissance</th>
               <th scope="col">Avant / après la nuit</th>
+              <th scope="col">Heure de naissance</th>
+              <th scope="col">Lieu de naissance</th>
               <th scope="col">Date hébraïque</th>
               <th scope="col" class="colonne-hebreu">Date hébraïque (hébreu)</th>
               <th scope="col">Source</th>
@@ -190,8 +216,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@hebcal/core@6.14.2/dist/bundle.min.js" integrity="sha384-LNMm/FxyHSAQX0OqXcoklap5Jm2815Z9F6JxL2SGnLRs5mdMBIO5J59FzbPoFFdd" crossorigin="anonymous"></script>
 <!-- Supabase : base de données et connexion (version figée + empreinte de sécurité) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R" crossorigin="anonymous"></script>
+<!-- tz-lookup : fuseau horaire d'un lieu à partir de ses coordonnées (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/tz-lookup@6.1.25/tz.js" integrity="sha384-hu4xDymJTssX8+i8qDUKexc5lIusgVeLPv72brg57d+WMdeCGtr3A1U8oW8PEtaP" crossorigin="anonymous"></script>
 <script src="js/base-de-donnees.js"></script>
 <script src="js/dates-hebraiques.js"></script>
+<script src="js/recherche-lieu.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

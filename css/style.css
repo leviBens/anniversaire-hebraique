@@ -394,6 +394,11 @@ h1, h2, p { margin: 0; }
   font-weight: 600;
 }
 .choix__bouton svg { flex: 0 0 22px; }
+/* Bloqués quand « Je ne suis pas sûr(e) » est coché : le calcul choisit */
+.choix__bouton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
 .choix__aide {
   font-size: 13px;
   line-height: 1.5;
@@ -421,10 +426,70 @@ h1, h2, p { margin: 0; }
   line-height: 1.55;
 }
 .consentement__texte label { cursor: pointer; }
-.consentement__lien {
-  align-self: flex-start;
-  padding: 10px 0;
-  font-weight: 600;
+.consentement__texte label a { font-weight: 600; }
+
+/* « Je ne suis pas sûr(e) » */
+.case-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.case-option__case {
+  width: 20px; height: 20px;
+  flex: 0 0 20px;
+  margin: 0;
+  accent-color: var(--couleur-corail);
+  cursor: pointer;
+}
+.case-option label { cursor: pointer; padding: 6px 0; }
+
+.bloc-incertain {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 0 4px 16px;
+  border-left: 2px solid var(--couleur-peche);
+}
+
+/* Liste des lieux proposés, sous le champ « Lieu de naissance » */
+.champ__cadre { position: relative; }
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px); /* juste sous le champ */
+  left: 0; right: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: var(--couleur-nuit);
+  border: 1px solid var(--couleur-trait);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-panneau);
+}
+.suggestions__option {
+  padding: 11px 14px;
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.suggestions__option:hover,
+.suggestions__option[aria-selected="true"] {
+  background: var(--couleur-texte);
+  color: var(--couleur-encre);
+}
+.suggestions__message {
+  padding: 11px 14px;
+  font-size: 13.5px;
+  color: var(--couleur-texte-doux);
+}
+
+.info-chkia {
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  background: var(--couleur-champ);
+  border: 1px solid var(--couleur-trait-discret);
+  border-radius: var(--rayon);
 }
 
 /* --------------------------------------------------------------------------
@@ -546,6 +611,22 @@ h1, h2, p { margin: 0; }
   letter-spacing: 0.02em;
 }
 .date-francaise--moyenne { font-size: 38px; line-height: 1.05; }
+
+/* Boutons « Ajouter à mon calendrier » */
+.actions-calendrier__libelle {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-doux);
+}
+.actions-calendrier {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.actions-calendrier .bouton-secondaire { text-decoration: none; }
 
 .separateur-dore {
   height: 1px;

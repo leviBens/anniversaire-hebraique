@@ -83,13 +83,37 @@
               <!-- Valeur envoyée avec le formulaire : "avant" ou "apres" -->
               <input type="hidden" id="moment-naissance" name="moment-naissance" value="avant">
               <p id="aide-moment" class="choix__aide">Le jour hébraïque commence à la tombée de la nuit.</p>
+
+              <!-- « Je ne suis pas sûr(e) » : on calcule avec l'heure et le lieu de naissance -->
+              <div class="case-option">
+                <input id="moment-incertain" name="moment-incertain" class="case-option__case" type="checkbox" aria-controls="bloc-incertain">
+                <label for="moment-incertain">Je ne suis pas sûr(e)</label>
+              </div>
+
+              <div id="bloc-incertain" class="bloc-incertain" hidden>
+                <div class="champ">
+                  <label for="heure-naissance" class="champ__libelle">Heure de naissance</label>
+                  <input id="heure-naissance" name="heure-naissance" class="champ__saisie" type="time" aria-describedby="erreur-heure-naissance">
+                  <p id="erreur-heure-naissance" class="message-erreur" hidden></p>
+                </div>
+                <div class="champ">
+                  <label for="lieu-naissance" class="champ__libelle">Lieu de naissance</label>
+                  <div class="champ__cadre">
+                    <input id="lieu-naissance" name="lieu-naissance" class="champ__saisie" type="text" autocomplete="off" placeholder="Ex. : Perpignan" maxlength="200"
+                           role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions-lieu" aria-describedby="erreur-lieu-naissance">
+                    <ul id="suggestions-lieu" class="suggestions" role="listbox" aria-label="Lieux proposés" hidden></ul>
+                  </div>
+                  <p id="erreur-lieu-naissance" class="message-erreur" hidden></p>
+                </div>
+                <p id="info-chkia" class="info-chkia" aria-live="polite" hidden></p>
+              </div>
             </div>
 
             <div class="consentement">
               <input id="consentement" name="consentement" class="consentement__case" type="checkbox" required>
               <div class="consentement__texte">
-                <label for="consentement">J'accepte que mes nom, prénom et date de naissance soient enregistrés par le Beth 'Habad de Perpignan pour sa liste de contacts.</label>
-                <a id="lien-en-savoir-plus" class="consentement__lien" href="confidentialite.html" target="_blank" rel="noopener">En savoir plus</a>
+                <!-- Un lien à l'intérieur d'une étiquette ouvre la page sans cocher la case -->
+                <label for="consentement">J'accepte les <a href="confidentialite.html" target="_blank" rel="noopener">conditions générales</a></label>
               </div>
             </div>
 
@@ -137,7 +161,27 @@
           <div id="bloc-prochain-anniversaire" class="panneau panneau--leger">
             <p class="libelle-majuscules libelle-trait">Votre prochain anniversaire hébraïque tombe le</p>
             <p id="prochain-anniversaire" class="date-francaise date-francaise--moyenne">Mardi 16 novembre 2027</p>
+
+            <!-- Ajout du prochain anniversaire à un agenda (js/calendrier.js) -->
+            <p class="actions-calendrier__libelle">Ajouter à mon calendrier</p>
+            <div class="actions-calendrier">
+              <button id="btn-calendrier-ics" class="bouton-secondaire bouton-secondaire--grand" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 10h18"/></svg>
+                Apple / Outlook
+              </button>
+              <a id="lien-google-agenda" class="bouton-secondaire bouton-secondaire--grand" href="#" target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M3 10h18"/><path d="M12 13v5"/><path d="M9.5 15.5h5"/></svg>
+                Google Agenda
+              </a>
+            </div>
           </div>
+
+          <!-- Image à partager (js/image-partage.js) -->
+          <button id="btn-partager" class="bouton-principal" type="button">
+            <span id="btn-partager-texte" class="bouton-principal__texte">Partager ma date d'anniversaire</span>
+            <span class="bouton-principal__embout" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></span>
+          </button>
+          <p id="erreur-partage" class="alerte" role="alert" hidden></p>
 
           <a id="lien-nouvelle-conversion" class="lien-action" href="#">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
@@ -155,8 +199,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@hebcal/core@6.14.2/dist/bundle.min.js" integrity="sha384-LNMm/FxyHSAQX0OqXcoklap5Jm2815Z9F6JxL2SGnLRs5mdMBIO5J59FzbPoFFdd" crossorigin="anonymous"></script>
 <!-- Supabase : base de données (version figée + empreinte de sécurité) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R" crossorigin="anonymous"></script>
+<!-- tz-lookup : fuseau horaire d'un lieu à partir de ses coordonnées (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/tz-lookup@6.1.25/tz.js" integrity="sha384-hu4xDymJTssX8+i8qDUKexc5lIusgVeLPv72brg57d+WMdeCGtr3A1U8oW8PEtaP" crossorigin="anonymous"></script>
 <script src="js/base-de-donnees.js"></script>
 <script src="js/dates-hebraiques.js"></script>
+<script src="js/recherche-lieu.js"></script>
+<script src="js/calendrier.js"></script>
+<script src="js/logo-base64.js"></script>
+<script src="js/image-partage.js"></script>
 <script src="js/formulaire.js"></script>
 </body>
 </html>

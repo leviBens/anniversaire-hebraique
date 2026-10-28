@@ -20,6 +20,7 @@
   'use strict';
 
   var calculerDateHebraique = window.DatesHebraiques.calculerDateHebraique;
+  var momentSelonChkia = window.DatesHebraiques.momentSelonChkia;
   var dateDuJour = window.DatesHebraiques.dateDuJour;
   var baseDeDonnees = window.baseDeDonnees;
 
@@ -45,6 +46,8 @@
          prenom, nom,
          dateNaissance: "AAAA-MM-JJ",
          moment: "avant" | "apres",
+         heureNaissance: "18:30" ou null,  (rempli si « Je ne suis pas sûr(e) »)
+         lieuNaissance: "Perpignan, Occitanie, France" ou null,
          dateHebraique: "16 'Hechvan 5765",
          dateHebraiqueHebreu: "ט״ז חֶשְׁוָן תשס״ה",
          source: "formulaire" | "manuel",
@@ -124,6 +127,8 @@
       nom: ligne.nom,
       dateNaissance: ligne.date_naissance,
       moment: ligne.moment,
+      heureNaissance: ligne.heure_naissance ? ligne.heure_naissance.slice(0, 5) : null, // "18:30:00" → "18:30"
+      lieuNaissance: ligne.lieu_naissance,
       dateHebraique: ligne.date_hebraique,
       dateHebraiqueHebreu: ligne.date_hebraique_hebreu,
       source: ligne.source,
@@ -131,12 +136,16 @@
     };
   }
 
+  // heure et lieu : null quand « Je ne suis pas sûr(e) » n'est pas coché
+  // (une modification qui décoche la case efface donc l'heure et le lieu)
   function versLigne(contact) {
     return {
       prenom: contact.prenom,
       nom: contact.nom,
       date_naissance: contact.dateNaissance,
       moment: contact.moment,
+      heure_naissance: contact.heureNaissance || null,
+      lieu_naissance: contact.lieuNaissance || null,
       date_hebraique: contact.dateHebraique,
       date_hebraique_hebreu: contact.dateHebraiqueHebreu
     };
@@ -161,7 +170,7 @@
   var ICONE_CHARGEMENT = '<svg class="tourne" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
   var ICONE_ERREUR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>';
 
-  var NOMBRE_COLONNES = 9;
+  var NOMBRE_COLONNES = 11;
 
   var contacts = [];
 
@@ -258,6 +267,8 @@
       ajouterCellule(ligne, c.nom);
       ajouterCellule(ligne, formaterDate(c.dateNaissance));
       ajouterCellule(ligne, libelleMoment(c.moment));
+      ajouterCellule(ligne, c.heureNaissance);
+      ajouterCellule(ligne, c.lieuNaissance);
       ajouterCellule(ligne, c.dateHebraique);
       var celluleHebreu = ajouterCellule(ligne, c.dateHebraiqueHebreu);
       celluleHebreu.className = 'colonne-hebreu';
@@ -333,13 +344,15 @@
 
   /* Téléchargement CSV (séparateur « ; » pour Excel en français) */
   $('btn-telecharger-csv').addEventListener('click', function () {
-    var entetes = ['Prénom', 'Nom', 'Date de naissance', 'Avant / après la nuit', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le'];
+    var entetes = ['Prénom', 'Nom', 'Date de naissance', 'Avant / après la nuit', 'Heure de naissance', 'Lieu de naissance', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le'];
     var lignes = contacts.map(function (c) {
       return [
         c.prenom,
         c.nom,
         formaterDate(c.dateNaissance),
         libelleMoment(c.moment),
+        c.heureNaissance,
+        c.lieuNaissance,
         c.dateHebraique,
         c.dateHebraiqueHebreu,
         libelleSource(c.source),
@@ -384,8 +397,87 @@
   var erreurFormulaire = $('erreur-ajout');
   var confirmation = $('confirmation-ajout');
   var boutonsMomentAjout = formulairePersonne.querySelectorAll('.choix__bouton');
+  var caseAjoutIncertain = $('ajout-moment-incertain');
+  var blocAjoutIncertain = $('ajout-bloc-incertain');
+  var champAjoutHeure = $('ajout-heure-naissance');
+  var champAjoutLieu = $('ajout-lieu-naissance');
+  var infoAjoutChkia = $('ajout-info-chkia');
 
   var idEnModification = null; // null = ajout, sinon id de la personne modifiée
+
+  /* « Je ne suis pas sûr(e) »
+     On n'enregistre que le nom du lieu, pas ses coordonnées. Pour une
+     modification, le moment calculé à l'enregistrement est donc gardé tant
+     que la date, l'heure et le lieu ne changent pas ; sinon il faut choisir
+     à nouveau le lieu dans la liste pour recalculer. */
+  var lieuAjoutChoisi = null; // { libelle, latitude, longitude } choisi dans la liste
+  var calculConserve = null;  // { lieu, dateNaissance, heure, moment } de la personne modifiée
+
+  var reinitialiserLieuAjout = window.RechercheLieu.brancher(champAjoutLieu, $('ajout-suggestions-lieu'), function (lieu) {
+    lieuAjoutChoisi = lieu;
+    if (lieu) afficherErreurAjout(regleAjoutLieu, '');
+    majInfoChkiaAjout();
+  });
+
+  caseAjoutIncertain.addEventListener('change', basculerIncertainAjout);
+  champAjoutHeure.addEventListener('input', majInfoChkiaAjout);
+  champAjoutDate.addEventListener('change', majInfoChkiaAjout);
+
+  function basculerIncertainAjout() {
+    var incertain = caseAjoutIncertain.checked;
+    blocAjoutIncertain.hidden = !incertain;
+    boutonsMomentAjout.forEach(function (b) { b.disabled = incertain; });
+    if (!incertain) {
+      afficherErreurAjout(regleAjoutHeure, '');
+      afficherErreurAjout(regleAjoutLieu, '');
+    }
+    majInfoChkiaAjout();
+  }
+
+  // Vrai si la personne modifiée garde la même date, heure et lieu qu'à l'enregistrement
+  function calculToujoursValable() {
+    return !!calculConserve && !lieuAjoutChoisi &&
+      champAjoutLieu.value === calculConserve.lieu &&
+      champAjoutDate.value === calculConserve.dateNaissance &&
+      champAjoutHeure.value === calculConserve.heure;
+  }
+
+  // Renvoie { moment } si on sait trancher, sinon null
+  function majInfoChkiaAjout() {
+    infoAjoutChkia.hidden = true;
+    if (!caseAjoutIncertain.checked) return null;
+
+    if (calculToujoursValable()) {
+      choisirMomentAjout(calculConserve.moment);
+      afficherInfoChkia('Moment calculé lors de l’enregistrement : ' + libelleMoment(calculConserve.moment).toLowerCase() +
+        ' la tombée de la nuit. Pour recalculer, choisissez à nouveau le lieu dans la liste.');
+      return { moment: calculConserve.moment };
+    }
+    if (!champAjoutDate.value || !champAjoutHeure.value || !lieuAjoutChoisi) return null;
+
+    var calcul;
+    try {
+      calcul = momentSelonChkia({
+        dateNaissance: champAjoutDate.value,
+        heure: champAjoutHeure.value,
+        latitude: lieuAjoutChoisi.latitude,
+        longitude: lieuAjoutChoisi.longitude
+      });
+    } catch (e) {
+      afficherInfoChkia('Impossible de calculer le coucher du soleil pour ce lieu.');
+      return null;
+    }
+
+    choisirMomentAjout(calcul.moment);
+    afficherInfoChkia('Le ' + formaterDate(champAjoutDate.value) + ' à ' + lieuAjoutChoisi.libelle.split(',')[0] +
+      ', le soleil s’est couché à ' + calcul.chkia.replace(':', ' h ') + ' : ' + libelleMoment(calcul.moment).toLowerCase() + ' la tombée de la nuit.');
+    return calcul;
+  }
+
+  function afficherInfoChkia(texte) {
+    infoAjoutChkia.textContent = texte;
+    infoAjoutChkia.hidden = false;
+  }
 
   champAjoutDate.max = dateDuJour();
 
@@ -414,6 +506,19 @@
       champAjoutNom.value = contact.nom;
       champAjoutDate.value = contact.dateNaissance;
       choisirMomentAjout(contact.moment);
+
+      if (contact.heureNaissance) {
+        caseAjoutIncertain.checked = true;
+        champAjoutHeure.value = contact.heureNaissance;
+        champAjoutLieu.value = contact.lieuNaissance;
+        calculConserve = {
+          lieu: contact.lieuNaissance,
+          dateNaissance: contact.dateNaissance,
+          heure: contact.heureNaissance,
+          moment: contact.moment
+        };
+        basculerIncertainAjout();
+      }
     }
 
     formulairePersonne.hidden = false;
@@ -431,6 +536,9 @@
 
   function reinitialiserFormulaire() {
     formulairePersonne.reset();
+    calculConserve = null;
+    reinitialiserLieuAjout();
+    basculerIncertainAjout();
     choisirMomentAjout('avant');
     reglesAjout.forEach(function (regle) { afficherErreurAjout(regle, ''); });
     erreurFormulaire.hidden = true;
@@ -467,6 +575,18 @@
       return caseAjoutConsentement.checked ? '' : 'L’accord de la personne est nécessaire.';
     } }
   ];
+
+  // Ces deux règles ne comptent que si « Je ne suis pas sûr(e) » est coché
+  var regleAjoutHeure = { champ: champAjoutHeure, erreur: $('erreur-ajout-heure-naissance'), verifier: function () {
+    return !caseAjoutIncertain.checked || champAjoutHeure.value ? '' : 'Indiquez l’heure de naissance.';
+  } };
+  var regleAjoutLieu = { champ: champAjoutLieu, erreur: $('erreur-ajout-lieu-naissance'), verifier: function () {
+    if (!caseAjoutIncertain.checked || lieuAjoutChoisi || calculToujoursValable()) return '';
+    return calculConserve
+      ? 'La date, l’heure ou le lieu a changé : choisissez à nouveau le lieu dans la liste pour recalculer.'
+      : 'Choisissez le lieu de naissance dans la liste proposée.';
+  } };
+  reglesAjout.splice(3, 0, regleAjoutHeure, regleAjoutLieu); // avant la case d'accord
 
   function afficherErreurAjout(regle, message) {
     regle.champ.setAttribute('aria-invalid', message ? 'true' : 'false');
@@ -509,6 +629,18 @@
       dateNaissance: champAjoutDate.value,   // "AAAA-MM-JJ"
       moment: champAjoutMoment.value         // "avant" | "apres"
     };
+    var heureEtLieu = { heureNaissance: null, lieuNaissance: null };
+
+    if (caseAjoutIncertain.checked) {
+      var calcul = majInfoChkiaAjout();
+      if (!calcul) {
+        erreurFormulaire.textContent = 'Impossible de savoir si la naissance a eu lieu avant ou après la tombée de la nuit. Décochez « Je ne suis pas sûr(e) » et choisissez vous-même.';
+        erreurFormulaire.hidden = false;
+        return;
+      }
+      donnees.moment = calcul.moment;
+      heureEtLieu = { heureNaissance: champAjoutHeure.value, lieuNaissance: champAjoutLieu.value };
+    }
     var id = idEnModification;
 
     definirChargementAjout(true);
@@ -516,7 +648,7 @@
     // La date hébraïque est toujours recalculée : la date civile a pu changer
     calculerDateHebraique(donnees)
       .then(function (resultat) {
-        var complet = Object.assign({}, donnees, {
+        var complet = Object.assign({}, donnees, heureEtLieu, {
           dateHebraique: resultat.dateHebraique,
           dateHebraiqueHebreu: resultat.dateHebraiqueHebreu
         });

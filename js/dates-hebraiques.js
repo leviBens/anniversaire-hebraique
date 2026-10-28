@@ -26,7 +26,8 @@
        {
          dateHebraique:        "16 'Hechvan 5765",
          dateHebraiqueHebreu:  "ט״ז חֶשְׁוָן תשס״ה",
-         prochainAnniversaire: "Mardi 16 novembre 2027"
+         prochainAnniversaire: "Mardi 16 novembre 2027",
+         prochainAnniversaireIso: "2027-11-16"   (pour le calendrier)
        }
      ------------------------------------------------------------------------ */
   function calculerDateHebraique(donnees) {
@@ -44,7 +45,8 @@
     return {
       dateHebraique: formaterDateHebraique(naissance),
       dateHebraiqueHebreu: naissance.renderGematriya(),
-      prochainAnniversaire: formaterDateCivile(anniversaire, aujourdhui)
+      prochainAnniversaire: formaterDateCivile(anniversaire, aujourdhui),
+      prochainAnniversaireIso: versTexteIso(anniversaire)
     };
   }
 
@@ -69,6 +71,36 @@
       anniversaire = hebcal.HebrewCalendar.getBirthdayOrAnniversary(annee + 1, naissance);
     }
     return anniversaire.greg();
+  }
+
+  /* ------------------------------------------------------------------------
+     « Je ne suis pas sûr(e) » : né(e) avant ou après la tombée de la nuit ?
+     Reçoit : { dateNaissance: "AAAA-MM-JJ", heure: "HH:MM", latitude, longitude }
+     Renvoie : { moment: "avant" | "apres", chkia: "18:50" }
+
+     Limite retenue : la chkia (coucher du soleil), à l'heure locale du lieu
+     de naissance. Le fuseau horaire du lieu vient de tz-lookup (chargé avant
+     ce fichier, variable globale « tzlookup ») ; le navigateur connaît
+     l'heure d'été de chaque époque (pas d'heure d'été en France avant 1976).
+     La chkia est arrondie à la minute inférieure : né(e) à 18:50 avec une
+     chkia à 18:50 → après.
+     ------------------------------------------------------------------------ */
+  function momentSelonChkia(donnees) {
+    var hebcal = window.hebcal;
+    var fuseau = window.tzlookup(donnees.latitude, donnees.longitude);
+    var lieu = new hebcal.Location(donnees.latitude, donnees.longitude, false, fuseau, 'Lieu de naissance');
+    var chkia = new hebcal.Zmanim(lieu, versDateLocale(donnees.dateNaissance), false).shkiah();
+    // Pas de coucher du soleil ce jour-là (régions polaires)
+    if (!chkia || isNaN(chkia.getTime())) throw new Error('Coucher du soleil introuvable');
+
+    var heureChkia = new Intl.DateTimeFormat('fr-FR', {
+      timeZone: fuseau, hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).format(chkia);
+
+    return {
+      moment: donnees.heure < heureChkia ? 'avant' : 'apres', // "HH:MM" se comparent comme du texte
+      chkia: heureChkia
+    };
   }
 
   /* Mise en forme */
@@ -109,16 +141,21 @@
     return new Promise(function (resoudre) { setTimeout(resoudre, ms); });
   }
 
-  function dateDuJour() {
-    var d = new Date();
+  // Date → "AAAA-MM-JJ" en heure locale (l'inverse de versDateLocale)
+  function versTexteIso(d) {
     var mois = String(d.getMonth() + 1).padStart(2, '0');
     var jour = String(d.getDate()).padStart(2, '0');
     return d.getFullYear() + '-' + mois + '-' + jour;
   }
 
+  function dateDuJour() {
+    return versTexteIso(new Date());
+  }
+
   window.DatesHebraiques = {
     calculerDateHebraique: calculerDateHebraique,
     calculer: calculer,
+    momentSelonChkia: momentSelonChkia,
     dateDuJour: dateDuJour,
     attendre: attendre
   };
