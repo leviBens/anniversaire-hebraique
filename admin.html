@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Espace administrateur — Beth 'Habad de Perpignan</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Frank+Ruhl+Libre:wght@400;500;700&family=Montserrat:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page">
+  <div class="forme forme--coin" aria-hidden="true"></div>
+
+  <!-- ==================================================================
+       ÉCRAN 3 : CONNEXION ADMINISTRATEUR
+       ================================================================== -->
+  <div id="ecran-connexion" class="conteneur conteneur--etroit">
+    <header class="entete">
+      <div class="marque">
+        <img class="logo-image" src="images/logo-habad-66.png" alt="Logo Habad 66" width="41" height="48">
+        <p class="marque__nom">Beth 'Habad de Perpignan<br><span class="marque__region">Pyrénées-Orientales</span></p>
+      </div>
+      <span class="baroukh-hachem" lang="he" dir="rtl">ב״ה</span>
+    </header>
+
+    <div class="points" aria-hidden="true"></div>
+
+    <main>
+      <div class="ecran__intro" style="margin-bottom: 28px">
+        <h1 id="titre-admin" class="titre"><span class="titre__accent">Espace</span><br>administrateur</h1>
+      </div>
+
+      <form id="formulaire-connexion" class="panneau" novalidate>
+        <div id="erreur-connexion" class="alerte" role="alert" hidden>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>
+          <span id="erreur-connexion-texte">Identifiants incorrects</span>
+        </div>
+
+        <div class="champ">
+          <label for="admin-email" class="champ__libelle">E-mail</label>
+          <input id="admin-email" name="email" class="champ__saisie" type="email" autocomplete="username" inputmode="email" aria-describedby="erreur-connexion">
+        </div>
+
+        <div class="champ">
+          <label for="admin-mot-de-passe" class="champ__libelle">Mot de passe</label>
+          <input id="admin-mot-de-passe" name="mot-de-passe" class="champ__saisie" type="password" autocomplete="current-password" aria-describedby="erreur-connexion">
+        </div>
+
+        <button id="btn-connexion" class="bouton-principal" type="submit">
+          <span id="btn-connexion-texte" class="bouton-principal__texte">Se connecter</span>
+          <span class="bouton-principal__embout" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <!-- ==================================================================
+       ÉCRAN 4 : LISTE DES CONTACTS
+       ================================================================== -->
+  <div id="ecran-contacts" class="admin" hidden>
+    <aside class="admin__barre" aria-label="Administration">
+      <div class="marque">
+        <img class="logo-image" src="images/logo-habad-66.png" alt="Logo Habad 66" width="41" height="48">
+        <p class="marque__nom">Beth 'Habad de Perpignan<br><span class="marque__region">Pyrénées-Orientales</span></p>
+      </div>
+      <div class="points" aria-hidden="true"></div>
+      <nav class="admin__menu" aria-label="Menu administrateur">
+        <a href="#titre-contacts" aria-current="page">Contacts</a>
+      </nav>
+      <div class="admin__espace"></div>
+      <button id="btn-deconnexion" class="bouton-secondaire" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Se déconnecter
+      </button>
+    </aside>
+
+    <main class="admin__contenu">
+      <div class="admin__tete">
+        <div class="admin__titres">
+          <h1 id="titre-contacts" class="titre" tabindex="-1"><span class="titre__accent">Contacts</span> enregistrés</h1>
+          <p id="compteur-contacts" class="compteur"><span id="compteur-nombre" class="compteur__nombre">0</span><span id="compteur-libelle">personne</span></p>
+        </div>
+        <div class="admin__actions">
+          <button id="btn-ajouter-personne" class="bouton-secondaire bouton-secondaire--grand" type="button" aria-expanded="false" aria-controls="formulaire-ajout">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Ajouter une personne
+          </button>
+          <button id="btn-telecharger-csv" class="bouton-principal" type="button">
+            <span class="bouton-principal__texte">Télécharger (CSV)</span>
+            <span class="bouton-principal__embout" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Message après un ajout réussi -->
+      <p id="confirmation-ajout" class="confirmation" role="status" hidden></p>
+
+      <!-- ================================================================
+           AJOUT MANUEL D'UNE PERSONNE
+           ================================================================ -->
+      <form id="formulaire-ajout" class="panneau panneau--ajout" novalidate hidden aria-labelledby="titre-ajout">
+        <p id="titre-ajout" class="libelle-majuscules libelle-trait">Ajouter une personne</p>
+
+        <div class="champs-cote-a-cote">
+          <div class="champ">
+            <label for="ajout-prenom" class="champ__libelle">Prénom</label>
+            <input id="ajout-prenom" name="prenom" class="champ__saisie" type="text" autocomplete="off" maxlength="80" aria-describedby="erreur-ajout-prenom">
+            <p id="erreur-ajout-prenom" class="message-erreur" hidden></p>
+          </div>
+          <div class="champ">
+            <label for="ajout-nom" class="champ__libelle">Nom</label>
+            <input id="ajout-nom" name="nom" class="champ__saisie" type="text" autocomplete="off" maxlength="80" aria-describedby="erreur-ajout-nom">
+            <p id="erreur-ajout-nom" class="message-erreur" hidden></p>
+          </div>
+        </div>
+
+        <div class="champ">
+          <label for="ajout-date-naissance" class="champ__libelle">Date de naissance</label>
+          <input id="ajout-date-naissance" name="date-naissance" class="champ__saisie" type="date" min="1900-01-01" aria-describedby="erreur-ajout-date-naissance">
+          <p id="erreur-ajout-date-naissance" class="message-erreur" hidden></p>
+        </div>
+
+        <div class="choix" role="group" aria-labelledby="libelle-ajout-moment">
+          <p id="libelle-ajout-moment" class="champ__libelle">Moment de la naissance</p>
+          <div class="choix__boutons">
+            <button type="button" class="choix__bouton" data-moment="avant" aria-pressed="true">
+              <span>Avant la tombée de la nuit</span>
+            </button>
+            <button type="button" class="choix__bouton" data-moment="apres" aria-pressed="false">
+              <span>Après la tombée de la nuit</span>
+            </button>
+          </div>
+          <input type="hidden" id="ajout-moment-naissance" name="moment-naissance" value="avant">
+        </div>
+
+        <div id="bloc-ajout-consentement" class="consentement">
+          <input id="ajout-consentement" name="consentement" class="consentement__case" type="checkbox" aria-describedby="erreur-ajout-consentement">
+          <div class="consentement__texte">
+            <label for="ajout-consentement">Cette personne est d'accord pour être enregistrée dans la liste de contacts.</label>
+            <p id="erreur-ajout-consentement" class="message-erreur" hidden></p>
+          </div>
+        </div>
+
+        <p id="erreur-ajout" class="alerte" role="alert" hidden></p>
+
+        <div class="formulaire-ajout__boutons">
+          <button id="btn-enregistrer-ajout" class="bouton-principal" type="submit">
+            <span id="btn-enregistrer-ajout-texte" class="bouton-principal__texte">Enregistrer</span>
+            <span class="bouton-principal__embout" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          </button>
+          <button id="btn-annuler-ajout" class="bouton-secondaire" type="button">Annuler</button>
+        </div>
+      </form>
+
+      <div id="cadre-table-contacts" class="cadre-tableau" role="region" aria-label="Tableau des contacts" tabindex="0">
+        <table id="table-contacts" class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Prénom</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Date de naissance</th>
+              <th scope="col">Avant / après la nuit</th>
+              <th scope="col">Date hébraïque</th>
+              <th scope="col" class="colonne-hebreu">Date hébraïque (hébreu)</th>
+              <th scope="col">Source</th>
+              <th scope="col">Enregistré le</th>
+              <th scope="col"><span class="visuellement-cache">Actions</span></th>
+            </tr>
+          </thead>
+          <!-- Les lignes sont ajoutées par js/admin.js -->
+          <tbody id="corps-table-contacts"></tbody>
+        </table>
+      </div>
+
+      <p id="aide-defilement" class="aide-defilement">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+        Faites glisser le tableau pour voir toutes les colonnes.
+      </p>
+
+      <div class="points" aria-hidden="true"></div>
+    </main>
+  </div>
+</div>
+
+<!-- Hebcal : calcul du calendrier hébraïque (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/@hebcal/core@6.14.2/dist/bundle.min.js" integrity="sha384-LNMm/FxyHSAQX0OqXcoklap5Jm2815Z9F6JxL2SGnLRs5mdMBIO5J59FzbPoFFdd" crossorigin="anonymous"></script>
+<!-- Supabase : base de données et connexion (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R" crossorigin="anonymous"></script>
+<script src="js/base-de-donnees.js"></script>
+<script src="js/dates-hebraiques.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+/* ==========================================================================
+   Anniversaire hébraïque — Beth 'Habad · [Ville]
+   Feuille de style commune (index.html + admin.html)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIABLES — couleurs, polices, dimensions
+   Modifiez ici pour changer l'apparence de tout le site.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Couleurs principales */
+  --couleur-corail: #E0524A;          /* bouton principal */
+  --couleur-peche: #F59A6E;           /* embout du bouton, petits traits */
+  --couleur-pervenche: #C9CEFF;       /* premier mot des titres, liens */
+  --couleur-or: #F4C46B;              /* dates en hébreu */
+  --couleur-nuit: #161842;            /* fond de secours */
+  --couleur-encre: #1B1A4A;           /* texte sur fond blanc */
+
+  /* Textes */
+  --couleur-texte: #FFFFFF;
+  --couleur-texte-doux: rgba(255, 255, 255, 0.82);
+  --couleur-erreur: #FFC2B8;
+  --couleur-erreur-fond: rgba(224, 82, 74, 0.2);
+
+  /* Panneaux et bordures */
+  --couleur-panneau: rgba(19, 15, 48, 0.80);
+  --couleur-panneau-leger: rgba(19, 15, 48, 0.60);
+  --couleur-trait: rgba(255, 255, 255, 0.50);
+  --couleur-trait-discret: rgba(255, 255, 255, 0.14);
+  --couleur-champ: rgba(255, 255, 255, 0.06);
+
+  /* Dégradés */
+  --degrade-fond: linear-gradient(172deg, #B44A72 0%, #7A3F92 34%, #3A2F82 66%, #161842 100%);
+  --degrade-forme: radial-gradient(circle at 66% 38%, #FFC09A 0%, #F27C6E 20%, #C2558C 42%, #6A44A6 66%, #33348C 100%);
+  --degrade-forme-2: radial-gradient(circle at 40% 35%, #F7A47C 0%, #D9607C 30%, #6A44A6 70%, #2C2E7E 100%);
+
+  /* Polices */
+  --police-titre: 'Bebas Neue', 'Oswald', 'Arial Narrow', sans-serif;
+  --police-texte: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --police-hebreu: 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'Times New Roman', serif;
+
+  /* Dimensions */
+  --hauteur-champ: 52px;
+  --hauteur-bouton: 56px;
+  --rayon: 2px;
+  --rayon-panneau: 4px;
+  --ombre-panneau: 0 24px 48px rgba(10, 8, 40, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--couleur-nuit);
+  color: var(--couleur-texte);
+  font-family: var(--police-texte);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a { color: var(--couleur-pervenche); }
+a:hover { color: var(--couleur-texte); }
+
+input:focus-visible,
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--couleur-pervenche);
+  outline-offset: 2px;
+}
+
+h1, h2, p { margin: 0; }
+
+.visuellement-cache {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   3. PAGE, FORMES DÉCORATIVES, CONTENEUR
+   -------------------------------------------------------------------------- */
+.page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--degrade-fond);
+}
+
+.forme {
+  position: absolute;
+  pointer-events: none;
+}
+.forme--1 {
+  top: 96px; right: -86px;
+  width: 250px; height: 230px;
+  border-radius: 58% 42% 55% 45% / 46% 58% 42% 54%;
+  background: var(--degrade-forme);
+  box-shadow: 0 30px 60px rgba(10, 8, 40, 0.45);
+  transform: rotate(-14deg);
+}
+.forme--2 {
+  bottom: 120px; left: -70px;
+  width: 180px; height: 170px;
+  border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  background: var(--degrade-forme-2);
+  opacity: 0.85;
+}
+
+/* Forme en haut à droite (page administrateur) */
+.forme--coin {
+  top: 70px; right: -110px;
+  width: 240px; height: 220px;
+  border-radius: 58% 42% 55% 45% / 46% 58% 42% 54%;
+  background: var(--degrade-forme);
+  opacity: 0.9;
+  transform: rotate(-14deg);
+}
+
+.conteneur {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Rangée de points (comme sur le visuel de référence) */
+.points {
+  height: 6px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.55) 1.4px, transparent 1.9px);
+  background-size: 26px 6px;
+  background-position: center;
+}
+
+/* --------------------------------------------------------------------------
+   4. EN-TÊTE
+   -------------------------------------------------------------------------- */
+.entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+}
+.marque {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo {
+  width: 40px; height: 40px;
+  flex: 0 0 40px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+.marque__nom {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.marque__region {
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--couleur-texte-doux);
+}
+.logo-image {
+  height: 48px;
+  width: auto;
+  flex: 0 0 auto;
+}
+.baroukh-hachem {
+  font-family: var(--police-hebreu);
+  font-size: 17px;
+}
+
+/* --------------------------------------------------------------------------
+   5. ÉCRANS (formulaire / résultat)
+   -------------------------------------------------------------------------- */
+.ecran {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.ecran__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.ecran__contenu {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Colonne verticale des étapes : visible sur ordinateur seulement */
+.rail { display: none; }
+
+/* Numéros géants au-dessus du panneau : ordinateur seulement */
+.numeros { display: none; }
+
+.etape {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.etape__numero {
+  font-weight: 200;
+  font-size: 44px;
+  line-height: 1;
+}
+.etape__libelle,
+.libelle-majuscules {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.etape__libelle { color: var(--couleur-texte-doux); }
+
+.titre {
+  font-family: var(--police-titre);
+  font-weight: 400;
+  font-size: 58px;
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+}
+.titre__accent { color: var(--couleur-pervenche); }
+.titre:focus { outline: none; }
+
+.sous-titre {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--couleur-texte-doux);
+  max-width: 34ch;
+}
+
+.mention {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--couleur-texte-doux);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   6. PANNEAUX
+   -------------------------------------------------------------------------- */
+.panneau {
+  background: var(--couleur-panneau);
+  border: 1px solid var(--couleur-trait-discret);
+  border-radius: var(--rayon-panneau);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.panneau--leger { background: var(--couleur-panneau-leger); gap: 10px; padding: 22px; }
+.panneau--dore {
+  border-color: rgba(244, 196, 107, 0.35);
+  box-shadow: var(--ombre-panneau);
+  padding: 28px 22px 26px;
+  gap: 18px;
+}
+
+/* Petit trait pêche devant un libellé */
+.libelle-trait {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.libelle-trait::before {
+  content: "";
+  flex: 0 0 24px;
+  height: 2px;
+  background: var(--couleur-peche);
+}
+
+/* --------------------------------------------------------------------------
+   7. CHAMPS DE FORMULAIRE
+   -------------------------------------------------------------------------- */
+.champs-cote-a-cote {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.champ__libelle {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.champ__saisie {
+  height: var(--hauteur-champ);
+  width: 100%;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 16px; /* 16px minimum : évite le zoom automatique sur iPhone */
+  color: var(--couleur-texte);
+  background: var(--couleur-champ);
+  border: 1px solid var(--couleur-trait);
+  border-radius: var(--rayon);
+  color-scheme: dark;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.champ__saisie::placeholder { color: rgba(255, 255, 255, 0.62); }
+.champ__saisie[aria-invalid="true"] {
+  border: 2px solid var(--couleur-erreur);
+  background: rgba(255, 194, 184, 0.08);
+}
+
+.message-erreur {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--couleur-erreur);
+}
+.message-erreur svg { flex: 0 0 16px; }
+
+.alerte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--couleur-erreur-fond);
+  border: 1px solid var(--couleur-erreur);
+  border-radius: var(--rayon);
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFE1DB;
+}
+
+/* Choix avant / après la tombée de la nuit */
+.choix {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.choix__boutons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.choix__bouton {
+  min-height: 72px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--couleur-texte);
+  border: 1px solid var(--couleur-trait);
+  border-radius: var(--rayon);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  cursor: pointer;
+}
+.choix__bouton[aria-pressed="true"] {
+  background: var(--couleur-texte);
+  color: var(--couleur-encre);
+  border-color: var(--couleur-texte);
+  font-weight: 600;
+}
+.choix__bouton svg { flex: 0 0 22px; }
+.choix__aide {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--couleur-texte-doux);
+}
+
+/* Case de consentement */
+.consentement {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.consentement__case {
+  width: 24px; height: 24px;
+  flex: 0 0 24px;
+  margin: 2px 0 0;
+  accent-color: var(--couleur-corail);
+  cursor: pointer;
+}
+.consentement__texte {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.consentement__texte label { cursor: pointer; }
+.consentement__lien {
+  align-self: flex-start;
+  padding: 10px 0;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   8. BOUTONS
+   -------------------------------------------------------------------------- */
+.bouton-principal {
+  height: var(--hauteur-bouton);
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  border: 0;
+  border-radius: var(--rayon);
+  overflow: hidden;
+  background: var(--couleur-corail);
+  color: var(--couleur-texte);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(224, 82, 74, 0.35);
+}
+.bouton-principal__texte {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+.bouton-principal__embout {
+  width: var(--hauteur-bouton);
+  flex: 0 0 var(--hauteur-bouton);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--couleur-peche);
+  color: var(--couleur-encre);
+}
+.bouton-principal:disabled {
+  background: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.bouton-principal:disabled .bouton-principal__embout {
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+}
+/* État « chargement » : le bouton garde sa couleur corail */
+.bouton-principal.est-en-chargement,
+.bouton-principal.est-en-chargement:disabled {
+  background: var(--couleur-corail);
+  color: var(--couleur-texte);
+  cursor: progress;
+}
+.bouton-principal.est-en-chargement .bouton-principal__embout {
+  background: var(--couleur-peche);
+  color: var(--couleur-encre);
+}
+
+.aide-bouton {
+  font-size: 13px;
+  color: var(--couleur-texte-doux);
+  text-align: center;
+}
+
+.bouton-secondaire {
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(19, 15, 48, 0.5);
+  color: var(--couleur-texte);
+  border: 1px solid var(--couleur-trait);
+  border-radius: var(--rayon);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.lien-action {
+  align-self: center;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--couleur-texte);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 2px solid var(--couleur-peche);
+}
+
+/* Indicateur de chargement */
+@keyframes tourne { to { transform: rotate(360deg); } }
+.tourne { animation: tourne 0.9s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .tourne { animation-duration: 2.4s; }
+}
+
+/* --------------------------------------------------------------------------
+   9. ÉCRAN RÉSULTAT
+   -------------------------------------------------------------------------- */
+.date-francaise {
+  font-family: var(--police-titre);
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.date-francaise--moyenne { font-size: 38px; line-height: 1.05; }
+
+.separateur-dore {
+  height: 1px;
+  background: rgba(244, 196, 107, 0.45);
+}
+
+.date-hebreu {
+  font-family: var(--police-hebreu);
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.35;
+  color: var(--couleur-or);
+  text-align: right;
+}
+
+/* --------------------------------------------------------------------------
+   9 bis. PAGE DE CONFIDENTIALITÉ
+   -------------------------------------------------------------------------- */
+.conteneur--texte { max-width: 720px; }
+
+.marque--lien {
+  color: var(--couleur-texte);
+  text-decoration: none;
+}
+
+.texte-legal {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.texte-legal__maj {
+  font-size: 13px;
+  color: var(--couleur-texte-doux);
+}
+.texte-legal section {
+  background: var(--couleur-panneau);
+  border: 1px solid var(--couleur-trait-discret);
+  border-radius: var(--rayon-panneau);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.texte-legal h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.texte-legal h2::before {
+  content: "";
+  flex: 0 0 24px;
+  height: 2px;
+  background: var(--couleur-peche);
+}
+.texte-legal p,
+.texte-legal li {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--couleur-texte-doux);
+}
+.texte-legal strong { color: var(--couleur-texte); font-weight: 600; }
+.texte-legal ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.texte-legal .lien-action { align-self: flex-start; }
+
+/* --------------------------------------------------------------------------
+   10. ADMINISTRATION
+   -------------------------------------------------------------------------- */
+.conteneur--etroit { max-width: 440px; }
+
+.admin {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.admin__barre {
+  padding: 20px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.admin__barre .marque__nom { font-size: 11px; line-height: 1.5; }
+.admin__menu,
+.admin__barre .points,
+.admin__espace { display: none; }
+
+.admin__contenu {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin__tete {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.admin__titres {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.admin__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bouton-secondaire--grand {
+  min-height: var(--hauteur-bouton);
+  font-size: 13px;
+}
+
+/* Ajout manuel d'une personne */
+.panneau--ajout { max-width: 640px; }
+.formulaire-ajout__boutons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Message après un ajout réussi */
+.confirmation {
+  padding: 12px 14px;
+  background: rgba(244, 196, 107, 0.14);
+  border: 1px solid rgba(244, 196, 107, 0.5);
+  border-radius: var(--rayon);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.compteur {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--couleur-texte-doux);
+}
+.compteur__nombre {
+  font-size: 44px;
+  font-weight: 200;
+  letter-spacing: 0;
+  line-height: 1;
+  color: var(--couleur-texte);
+}
+
+/* Tableau : défile horizontalement dans son cadre sur téléphone */
+.cadre-tableau {
+  background: var(--couleur-panneau);
+  border: 1px solid var(--couleur-trait-discret);
+  border-radius: var(--rayon-panneau);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tableau {
+  width: 100%;
+  min-width: 1260px;
+  border-collapse: collapse;
+}
+.tableau th {
+  padding: 14px 16px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--couleur-texte-doux);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.tableau td {
+  padding: 14px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.tableau tbody tr:last-child td { border-bottom: 0; }
+.tableau tbody tr:hover td { background: rgba(255, 255, 255, 0.04); }
+.tableau .colonne-hebreu {
+  text-align: right;
+}
+.tableau td.colonne-hebreu {
+  font-family: var(--police-hebreu);
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--couleur-or);
+}
+/* Boutons « Modifier » / « Supprimer » de chaque ligne */
+.tableau__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.bouton-ligne {
+  min-height: 36px;
+  padding: 0 12px;
+  background: transparent;
+  color: var(--couleur-texte);
+  border: 1px solid var(--couleur-trait);
+  border-radius: var(--rayon);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.bouton-ligne:hover { background: rgba(255, 255, 255, 0.08); }
+.bouton-ligne--danger {
+  color: var(--couleur-erreur);
+  border-color: rgba(255, 194, 184, 0.5);
+}
+.bouton-ligne:disabled { opacity: 0.5; cursor: progress; }
+
+.tableau__vide {
+  text-align: center;
+  color: var(--couleur-texte-doux);
+}
+
+.aide-defilement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--couleur-texte-doux);
+}
+
+/* --------------------------------------------------------------------------
+   11. ORDINATEUR (960px et plus)
+   -------------------------------------------------------------------------- */
+@media (min-width: 960px) {
+  .conteneur {
+    max-width: 1240px;
+    padding: 0 48px 56px;
+    gap: 32px;
+  }
+  .conteneur--etroit { max-width: 520px; }
+  .conteneur--texte { max-width: 820px; }
+  .texte-legal .titre { font-size: clamp(56px, 7vw, 88px); }
+  .texte-legal section { padding: 28px; }
+
+  .entete { padding-top: 28px; }
+  .logo { width: 48px; height: 48px; flex-basis: 48px; font-size: 10px; }
+  .marque__nom { font-size: 13px; letter-spacing: 0.28em; }
+  .baroukh-hachem { font-size: 20px; }
+  .points { background-size: 30px 6px; }
+
+  .forme--1 {
+    top: 210px; right: auto; left: 52%;
+    width: 460px; height: 420px;
+    box-shadow: 0 40px 90px rgba(10, 8, 40, 0.5);
+  }
+  .forme--2 {
+    bottom: 80px; left: 30%;
+    width: 260px; height: 230px;
+    opacity: 0.75;
+  }
+  .forme--coin {
+    top: -90px; right: -110px;
+    width: 420px; height: 380px;
+  }
+
+  /* Trois colonnes : rail | titre | panneau */
+  .ecran {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) 460px;
+    gap: 48px;
+    align-items: start;
+  }
+  .rail {
+    display: flex;
+    align-self: stretch;
+    min-height: 520px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 28px 0;
+    background: rgba(19, 15, 48, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .rail__etape {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .rail__etape--active { color: var(--couleur-texte); }
+  .rail__trait {
+    width: 2px; height: 28px;
+    background: var(--couleur-peche);
+  }
+
+  .ecran__intro { padding-top: 40px; gap: 28px; }
+  .etape { display: none; }
+  .titre { font-size: clamp(64px, 8.4vw, 116px); line-height: 0.9; }
+  .sous-titre { font-size: 17px; line-height: 1.65; }
+
+  .numeros {
+    display: flex;
+    gap: 22px;
+    font-weight: 200;
+    font-size: 64px;
+    line-height: 1;
+  }
+  .numeros__inactif { color: rgba(255, 255, 255, 0.4); }
+
+  .ecran__contenu .panneau { padding: 32px 28px; }
+  .ecran__contenu > .panneau:first-of-type { box-shadow: 0 30px 60px rgba(10, 8, 40, 0.4); }
+  .mention { text-align: left; }
+
+  .champs-cote-a-cote {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .choix__bouton {
+    min-height: 64px;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px 12px;
+    text-align: left;
+  }
+
+  /* Administration : colonne latérale */
+  .admin { flex-direction: row; }
+  .admin__barre {
+    flex: 0 0 240px;
+    padding: 32px 28px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 28px;
+    background: rgba(19, 15, 48, 0.62);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .admin__barre .marque { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .admin__barre .marque__nom { font-size: 12px; letter-spacing: 0.24em; line-height: 1.6; }
+  .admin__barre .points { display: block; }
+  .admin__menu { display: block; }
+  .admin__espace { display: block; flex: 1; }
+  .admin__menu a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--couleur-texte);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .admin__menu a::before {
+    content: "";
+    width: 24px; height: 2px;
+    background: var(--couleur-peche);
+  }
+
+  .admin__contenu {
+    flex: 1 1 auto;
+    min-width: 0; /* le tableau défile dans son cadre au lieu d'élargir la page */
+    max-width: none;
+    padding: 48px 56px 56px;
+    gap: 32px;
+  }
+  .admin__tete {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .admin__tete .titre { font-size: 84px; line-height: 0.9; }
+  .admin__tete .bouton-principal { width: auto; }
+  .admin__actions { flex-direction: row; align-items: stretch; }
+  .formulaire-ajout__boutons { flex-direction: row; }
+  .formulaire-ajout__boutons .bouton-principal { width: auto; flex: 0 0 260px; }
+  .compteur__nombre { font-size: 52px; }
+  .tableau { min-width: 1180px; }
+  .tableau th, .tableau td { padding: 16px 18px; }
+  .aide-defilement { display: none; }
+}

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Votre anniversaire hébraïque — Beth 'Habad de Perpignan</title>
+  <meta name="description" content="Découvrez votre date de naissance hébraïque et la date de votre prochain anniversaire.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Frank+Ruhl+Libre:wght@400;500;700&family=Montserrat:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page">
+  <!-- Formes décoratives -->
+  <div class="forme forme--1" aria-hidden="true"></div>
+  <div class="forme forme--2" aria-hidden="true"></div>
+
+  <div class="conteneur">
+    <header class="entete">
+      <div class="marque">
+        <img id="logo" class="logo-image" src="images/logo-habad-66.png" alt="Logo Habad 66" width="41" height="48">
+        <p id="nom-centre" class="marque__nom">Beth 'Habad de Perpignan<br><span class="marque__region">Pyrénées-Orientales</span></p>
+      </div>
+      <span class="baroukh-hachem" lang="he" dir="rtl">ב״ה</span>
+    </header>
+
+    <div class="points" aria-hidden="true"></div>
+
+    <main>
+      <!-- ================================================================
+           ÉCRAN 1 : FORMULAIRE
+           ================================================================ -->
+      <section id="ecran-formulaire" class="ecran" aria-labelledby="titre-formulaire">
+        <aside class="rail" aria-hidden="true">
+          <span class="rail__etape rail__etape--active">01 · Vos informations</span>
+          <span class="rail__trait"></span>
+          <span class="rail__etape">02 · Votre résultat</span>
+        </aside>
+
+        <div class="ecran__intro">
+          <p class="etape"><span class="etape__numero">01</span><span class="etape__libelle">sur 02 · Vos informations</span></p>
+          <h1 id="titre-formulaire" class="titre"><span class="titre__accent">Votre</span><br>anniversaire<br>hébraïque</h1>
+          <p id="sous-titre" class="sous-titre">Découvrez votre date de naissance hébraïque et la date de votre prochain anniversaire.</p>
+        </div>
+
+        <div class="ecran__contenu">
+          <p class="numeros" aria-hidden="true"><span>01</span><span class="numeros__inactif">02</span></p>
+
+          <form id="formulaire-conversion" class="panneau" novalidate>
+            <div class="champs-cote-a-cote">
+              <div class="champ">
+                <label for="prenom" class="champ__libelle">Prénom</label>
+                <input id="prenom" name="prenom" class="champ__saisie" type="text" autocomplete="given-name" placeholder="Ex. : Moché" maxlength="80" aria-describedby="erreur-prenom">
+                <p id="erreur-prenom" class="message-erreur" hidden></p>
+              </div>
+              <div class="champ">
+                <label for="nom" class="champ__libelle">Nom</label>
+                <input id="nom" name="nom" class="champ__saisie" type="text" autocomplete="family-name" placeholder="Ex. : Benhamou" maxlength="80" aria-describedby="erreur-nom">
+                <p id="erreur-nom" class="message-erreur" hidden></p>
+              </div>
+            </div>
+
+            <div class="champ">
+              <label for="date-naissance" class="champ__libelle">Date de naissance</label>
+              <input id="date-naissance" name="date-naissance" class="champ__saisie" type="date" autocomplete="bday" min="1900-01-01" aria-describedby="erreur-date-naissance">
+              <p id="erreur-date-naissance" class="message-erreur" hidden></p>
+            </div>
+
+            <div class="choix" role="group" aria-labelledby="libelle-moment">
+              <p id="libelle-moment" class="champ__libelle">Moment de la naissance</p>
+              <div class="choix__boutons">
+                <button type="button" id="moment-avant" class="choix__bouton" data-moment="avant" aria-pressed="true" aria-describedby="aide-moment">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v7"/><path d="M4.2 10.2l1.4 1.4"/><path d="M1 18h2"/><path d="M21 18h2"/><path d="M18.4 11.6l1.4-1.4"/><path d="M23 22H1"/><path d="M16 5l-4 4-4-4"/></svg>
+                  <span>Né(e) avant la tombée de la nuit</span>
+                </button>
+                <button type="button" id="moment-apres" class="choix__bouton" data-moment="apres" aria-pressed="false" aria-describedby="aide-moment">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+                  <span>Né(e) après la tombée de la nuit</span>
+                </button>
+              </div>
+              <!-- Valeur envoyée avec le formulaire : "avant" ou "apres" -->
+              <input type="hidden" id="moment-naissance" name="moment-naissance" value="avant">
+              <p id="aide-moment" class="choix__aide">Le jour hébraïque commence à la tombée de la nuit.</p>
+            </div>
+
+            <div class="consentement">
+              <input id="consentement" name="consentement" class="consentement__case" type="checkbox" required>
+              <div class="consentement__texte">
+                <label for="consentement">J'accepte que mes nom, prénom et date de naissance soient enregistrés par le Beth 'Habad de Perpignan pour sa liste de contacts.</label>
+                <a id="lien-en-savoir-plus" class="consentement__lien" href="confidentialite.html" target="_blank" rel="noopener">En savoir plus</a>
+              </div>
+            </div>
+
+            <p id="erreur-envoi" class="alerte" role="alert" hidden></p>
+
+            <div class="champ">
+              <button id="btn-confirmer" class="bouton-principal" type="submit" disabled aria-describedby="aide-confirmer">
+                <span id="btn-confirmer-texte" class="bouton-principal__texte">Confirmer</span>
+                <span class="bouton-principal__embout" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></span>
+              </button>
+              <p id="aide-confirmer" class="aide-bouton">Cochez la case ci-dessus pour continuer.</p>
+            </div>
+          </form>
+
+          <p id="mention-rav" class="mention">En cas de doute sur l'heure de naissance, renseignez-vous auprès du Rav.</p>
+          <p class="mention"><a href="confidentialite.html">Confidentialité et données personnelles</a></p>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           ÉCRAN 2 : REMERCIEMENT / RÉSULTAT
+           ================================================================ -->
+      <section id="ecran-resultat" class="ecran" aria-labelledby="titre-merci" hidden>
+        <aside class="rail" aria-hidden="true">
+          <span class="rail__etape">01 · Vos informations</span>
+          <span class="rail__trait"></span>
+          <span class="rail__etape rail__etape--active">02 · Votre résultat</span>
+        </aside>
+
+        <div class="ecran__intro">
+          <p class="etape"><span class="etape__numero">02</span><span class="etape__libelle">sur 02 · Votre résultat</span></p>
+          <h1 id="titre-merci" class="titre" tabindex="-1"><span class="titre__accent">Merci <span id="prenom-merci">Moché</span>,</span><br>c'est bien enregistré !</h1>
+        </div>
+
+        <div class="ecran__contenu">
+          <p class="numeros" aria-hidden="true"><span class="numeros__inactif">01</span><span>02</span></p>
+
+          <div id="bloc-date-hebraique" class="panneau panneau--dore">
+            <p class="libelle-majuscules libelle-trait">Votre date de naissance hébraïque</p>
+            <p id="date-hebraique" class="date-francaise">16 'Hechvan 5765</p>
+            <div class="separateur-dore" aria-hidden="true"></div>
+            <p id="date-hebraique-he" class="date-hebreu" lang="he" dir="rtl">ט״ז חֶשְׁוָן תשס״ה</p>
+          </div>
+
+          <div id="bloc-prochain-anniversaire" class="panneau panneau--leger">
+            <p class="libelle-majuscules libelle-trait">Votre prochain anniversaire hébraïque tombe le</p>
+            <p id="prochain-anniversaire" class="date-francaise date-francaise--moyenne">Mardi 16 novembre 2027</p>
+          </div>
+
+          <a id="lien-nouvelle-conversion" class="lien-action" href="#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            Faire une autre conversion
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <div class="points" aria-hidden="true"></div>
+  </div>
+</div>
+
+<!-- Hebcal : calcul du calendrier hébraïque (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/@hebcal/core@6.14.2/dist/bundle.min.js" integrity="sha384-LNMm/FxyHSAQX0OqXcoklap5Jm2815Z9F6JxL2SGnLRs5mdMBIO5J59FzbPoFFdd" crossorigin="anonymous"></script>
+<!-- Supabase : base de données (version figée + empreinte de sécurité) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js" integrity="sha384-BWcjm9OdFth9TbhCxZPdm+gAOUMAzQy9nmTs12ioXdCcbVnJaPMn+fMUoQCLt60R" crossorigin="anonymous"></script>
+<script src="js/base-de-donnees.js"></script>
+<script src="js/dates-hebraiques.js"></script>
+<script src="js/formulaire.js"></script>
+</body>
+</html>
