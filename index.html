@@ -63,6 +63,12 @@
             </div>
 
             <div class="champ">
+              <label for="email" class="champ__libelle">E-mail</label>
+              <input id="email" name="email" class="champ__saisie" type="email" autocomplete="email" inputmode="email" placeholder="Ex. : moche@exemple.fr" maxlength="254" aria-describedby="erreur-email">
+              <p id="erreur-email" class="message-erreur" hidden></p>
+            </div>
+
+            <div class="champ">
               <label for="date-naissance" class="champ__libelle">Date de naissance</label>
               <input id="date-naissance" name="date-naissance" class="champ__saisie" type="date" autocomplete="bday" min="1900-01-01" aria-describedby="erreur-date-naissance">
               <p id="erreur-date-naissance" class="message-erreur" hidden></p>

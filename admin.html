@@ -119,6 +119,12 @@
         </div>
 
         <div class="champ">
+          <label for="ajout-email" class="champ__libelle">E-mail (facultatif)</label>
+          <input id="ajout-email" name="email" class="champ__saisie" type="email" autocomplete="off" inputmode="email" maxlength="254" aria-describedby="erreur-ajout-email">
+          <p id="erreur-ajout-email" class="message-erreur" hidden></p>
+        </div>
+
+        <div class="champ">
           <label for="ajout-date-naissance" class="champ__libelle">Date de naissance</label>
           <input id="ajout-date-naissance" name="date-naissance" class="champ__saisie" type="date" min="1900-01-01" aria-describedby="erreur-ajout-date-naissance">
           <p id="erreur-ajout-date-naissance" class="message-erreur" hidden></p>
@@ -186,6 +192,7 @@
             <tr>
               <th scope="col">Prénom</th>
               <th scope="col">Nom</th>
+              <th scope="col">E-mail</th>
               <th scope="col">Date de naissance</th>
               <th scope="col">Avant / après la nuit</th>
               <th scope="col">Heure de naissance</th>

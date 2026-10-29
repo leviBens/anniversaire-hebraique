@@ -19,6 +19,7 @@
   var calculerDateHebraique = window.DatesHebraiques.calculerDateHebraique;
   var momentSelonChkia = window.DatesHebraiques.momentSelonChkia;
   var dateDuJour = window.DatesHebraiques.dateDuJour;
+  var emailValide = window.DatesHebraiques.emailValide;
   var baseDeDonnees = window.baseDeDonnees;
 
   /* ------------------------------------------------------------------------
@@ -32,6 +33,7 @@
     return baseDeDonnees.from('contacts').insert({
       prenom: contact.prenom,
       nom: contact.nom,
+      email: contact.email,
       date_naissance: contact.dateNaissance,
       moment: contact.moment,
       heure_naissance: contact.heureNaissance,
@@ -55,6 +57,7 @@
 
   var champPrenom = $('prenom');
   var champNom = $('nom');
+  var champEmail = $('email');
   var champDate = $('date-naissance');
   var champMoment = $('moment-naissance');
   var caseIncertain = $('moment-incertain');
@@ -158,6 +161,10 @@
     { champ: champNom, erreur: $('erreur-nom'), verifier: function (v) {
       return v.trim() ? '' : 'Veuillez indiquer votre nom.';
     } },
+    { champ: champEmail, erreur: $('erreur-email'), verifier: function (v) {
+      if (!v.trim()) return 'Veuillez indiquer votre e-mail.';
+      return emailValide(v) ? '' : 'Cet e-mail ne semble pas valide (exemple : moche@exemple.fr).';
+    } },
     { champ: champDate, erreur: $('erreur-date-naissance'), verifier: function (v) {
       if (!v) return 'Veuillez indiquer votre date de naissance.';
       if (v > dateDuJour()) return 'La date de naissance ne peut pas être dans le futur.';
@@ -222,6 +229,7 @@
     var donnees = {
       prenom: champPrenom.value.trim(),
       nom: champNom.value.trim(),
+      email: champEmail.value.trim().toLowerCase(),
       dateNaissance: champDate.value,      // "AAAA-MM-JJ"
       moment: champMoment.value            // "avant" | "apres"
     };

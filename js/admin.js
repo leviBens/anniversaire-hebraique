@@ -22,6 +22,7 @@
   var calculerDateHebraique = window.DatesHebraiques.calculerDateHebraique;
   var momentSelonChkia = window.DatesHebraiques.momentSelonChkia;
   var dateDuJour = window.DatesHebraiques.dateDuJour;
+  var emailValide = window.DatesHebraiques.emailValide;
   var baseDeDonnees = window.baseDeDonnees;
 
   /* ------------------------------------------------------------------------
@@ -44,6 +45,7 @@
        {
          id,
          prenom, nom,
+         email: "moche@exemple.fr" ou null,  (null pour les inscrits d'avant le 29/10/2026)
          dateNaissance: "AAAA-MM-JJ",
          moment: "avant" | "apres",
          heureNaissance: "18:30" ou null,  (rempli si « Je ne suis pas sûr(e) »)
@@ -125,6 +127,7 @@
       id: ligne.id,
       prenom: ligne.prenom,
       nom: ligne.nom,
+      email: ligne.email,
       dateNaissance: ligne.date_naissance,
       moment: ligne.moment,
       heureNaissance: ligne.heure_naissance ? ligne.heure_naissance.slice(0, 5) : null, // "18:30:00" → "18:30"
@@ -138,10 +141,12 @@
 
   // heure et lieu : null quand « Je ne suis pas sûr(e) » n'est pas coché
   // (une modification qui décoche la case efface donc l'heure et le lieu)
+  // e-mail : null quand le champ est vide (une modification peut l'effacer)
   function versLigne(contact) {
     return {
       prenom: contact.prenom,
       nom: contact.nom,
+      email: contact.email || null,
       date_naissance: contact.dateNaissance,
       moment: contact.moment,
       heure_naissance: contact.heureNaissance || null,
@@ -170,7 +175,7 @@
   var ICONE_CHARGEMENT = '<svg class="tourne" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
   var ICONE_ERREUR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></svg>';
 
-  var NOMBRE_COLONNES = 11;
+  var NOMBRE_COLONNES = 12;
 
   var contacts = [];
 
@@ -265,6 +270,7 @@
       var ligne = document.createElement('tr');
       ajouterCellule(ligne, c.prenom);
       ajouterCellule(ligne, c.nom);
+      ajouterCellule(ligne, c.email);
       ajouterCellule(ligne, formaterDate(c.dateNaissance));
       ajouterCellule(ligne, libelleMoment(c.moment));
       ajouterCellule(ligne, c.heureNaissance);
@@ -344,11 +350,12 @@
 
   /* Téléchargement CSV (séparateur « ; » pour Excel en français) */
   $('btn-telecharger-csv').addEventListener('click', function () {
-    var entetes = ['Prénom', 'Nom', 'Date de naissance', 'Avant / après la nuit', 'Heure de naissance', 'Lieu de naissance', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le'];
+    var entetes = ['Prénom', 'Nom', 'E-mail', 'Date de naissance', 'Avant / après la nuit', 'Heure de naissance', 'Lieu de naissance', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le'];
     var lignes = contacts.map(function (c) {
       return [
         c.prenom,
         c.nom,
+        c.email,
         formaterDate(c.dateNaissance),
         libelleMoment(c.moment),
         c.heureNaissance,
@@ -388,6 +395,7 @@
   var boutonAjouter = $('btn-ajouter-personne');
   var champAjoutPrenom = $('ajout-prenom');
   var champAjoutNom = $('ajout-nom');
+  var champAjoutEmail = $('ajout-email');
   var champAjoutDate = $('ajout-date-naissance');
   var champAjoutMoment = $('ajout-moment-naissance');
   var blocConsentement = $('bloc-ajout-consentement');
@@ -504,6 +512,7 @@
     if (contact) {
       champAjoutPrenom.value = contact.prenom;
       champAjoutNom.value = contact.nom;
+      champAjoutEmail.value = contact.email || '';
       champAjoutDate.value = contact.dateNaissance;
       choisirMomentAjout(contact.moment);
 
@@ -564,6 +573,10 @@
     { champ: champAjoutNom, erreur: $('erreur-ajout-nom'), verifier: function () {
       return champAjoutNom.value.trim() ? '' : 'Indiquez le nom.';
     } },
+    { champ: champAjoutEmail, erreur: $('erreur-ajout-email'), verifier: function () {
+      var v = champAjoutEmail.value.trim();
+      return !v || emailValide(v) ? '' : 'Cet e-mail ne semble pas valide.'; // facultatif ici
+    } },
     { champ: champAjoutDate, erreur: $('erreur-ajout-date-naissance'), verifier: function () {
       var v = champAjoutDate.value;
       if (!v) return 'Indiquez la date de naissance.';
@@ -586,7 +599,7 @@
       ? 'La date, l’heure ou le lieu a changé : choisissez à nouveau le lieu dans la liste pour recalculer.'
       : 'Choisissez le lieu de naissance dans la liste proposée.';
   } };
-  reglesAjout.splice(3, 0, regleAjoutHeure, regleAjoutLieu); // avant la case d'accord
+  reglesAjout.splice(reglesAjout.length - 1, 0, regleAjoutHeure, regleAjoutLieu); // avant la case d'accord (dernière règle)
 
   function afficherErreurAjout(regle, message) {
     regle.champ.setAttribute('aria-invalid', message ? 'true' : 'false');
@@ -626,6 +639,7 @@
     var donnees = {
       prenom: champAjoutPrenom.value.trim(),
       nom: champAjoutNom.value.trim(),
+      email: champAjoutEmail.value.trim().toLowerCase(),
       dateNaissance: champAjoutDate.value,   // "AAAA-MM-JJ"
       moment: champAjoutMoment.value         // "avant" | "apres"
     };

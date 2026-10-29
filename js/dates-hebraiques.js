@@ -152,11 +152,20 @@
     return versTexteIso(new Date());
   }
 
+  /* Forme d'un e-mail : quelque-chose@domaine.extension, sans espace.
+     Même règle que la contrainte « email_valide » de supabase/schema.sql.
+     (Rangée ici car c'est le seul fichier partagé par les deux pages.) */
+  function emailValide(texte) {
+    var email = String(texte).trim();
+    return email.length <= 254 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  }
+
   window.DatesHebraiques = {
     calculerDateHebraique: calculerDateHebraique,
     calculer: calculer,
     momentSelonChkia: momentSelonChkia,
     dateDuJour: dateDuJour,
+    emailValide: emailValide,
     attendre: attendre
   };
 })();
