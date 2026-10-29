@@ -350,7 +350,7 @@
 
   /* Téléchargement CSV (séparateur « ; » pour Excel en français) */
   $('btn-telecharger-csv').addEventListener('click', function () {
-    var entetes = ['Prénom', 'Nom', 'E-mail', 'Date de naissance', 'Avant / après la nuit', 'Heure de naissance', 'Lieu de naissance', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le'];
+    var entetes = ['Prénom', 'Nom', 'E-mail', 'Date de naissance', 'Avant / après la nuit', 'Heure de naissance', 'Lieu de naissance', 'Date hébraïque', 'Date hébraïque (hébreu)', 'Source', 'Enregistré le', 'Tag'];
     var lignes = contacts.map(function (c) {
       return [
         c.prenom,
@@ -363,7 +363,8 @@
         c.dateHebraique,
         c.dateHebraiqueHebreu,
         libelleSource(c.source),
-        formaterDateHeure(c.enregistreLe)
+        formaterDateHeure(c.enregistreLe),
+        '#Anniversaire' // seulement dans le CSV, pas dans le tableau ni dans la base
       ];
     });
 
